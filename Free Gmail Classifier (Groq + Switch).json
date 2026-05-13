@@ -1,0 +1,473 @@
+{
+  "name": "Free Gmail Classifier (Groq + Switch)",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "label",
+        "operation": "create",
+        "name": "AI",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        -128
+      ],
+      "id": "6584a094-006b-4325-9709-5eeaeb218fc1",
+      "name": "Label: AI",
+      "webhookId": "219f2a94-c99a-4843-95ff-56af317cc4f0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xM3df1UF9JjlcaQr",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "operation": "create",
+        "name": "Jobs",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        208
+      ],
+      "id": "40e49105-ad56-4fd8-929a-189f9d58b807",
+      "name": "Label: Jobs",
+      "webhookId": "9b917612-3e71-4e8e-8d79-e0fb99681503",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xM3df1UF9JjlcaQr",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "operation": "create",
+        "name": "General",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        544
+      ],
+      "id": "89126785-d9bc-43ae-8fb4-4ea18824d4c7",
+      "name": "Label: Others",
+      "webhookId": "b203d50c-21a1-48ad-82f9-4115c5c858ef",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xM3df1UF9JjlcaQr",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        32
+      ],
+      "id": "783f278a-e96e-44af-9a9e-0fe99d472401",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xM3df1UF9JjlcaQr",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.snippet }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "New order",
+              "description": "Identify emails related to new purchase orders, invoices, payment confirmations, or customer requests to buy a product or service."
+            },
+            {
+              "category": "AI",
+              "description": "Classify emails containing technical discussions about Artificial Intelligence, Machine Learning, Generative AI tools, LLMs, or updates regarding AI frameworks and models."
+            },
+            {
+              "category": "jobs",
+              "description": "Identify emails about career opportunities, job applications, interview invitations, recruitment updates, or LinkedIn job alerts."
+            },
+            {
+              "category": "Others",
+              "description": "General emails that do not fit into AI, Jobs, or Orders, such as social media notifications, newsletters, or security alerts."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "7d44f567-7c8d-430a-acf4-c80f509c78fd",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Act as a professional Executive Assistant and Copywriter. I will provide you with a snippet of an incoming email. Your task is to draft a polite, professional, and concise reply. Ensure the tone is helpful yet firm. Provide a clear subject line and a well-structured body.\n\nIncoming Email Snippet: {{ $json.snippet }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        736,
+        -432
+      ],
+      "id": "080e0940-e9e6-43ce-950b-46f99a8ab7b3",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        -288
+      ],
+      "id": "699dcf41-f4e8-4bc0-bf72-63dfde29ea84",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AAyEa6jMG4UoRwwA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        240
+      ],
+      "id": "4740dd05-ddb7-414c-b2a7-bd468c2eab59",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AAyEa6jMG4UoRwwA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Act as a professional Executive Assistant and Copywriter. I will provide you with a snippet of an incoming email. Your task is to draft a polite, professional, and concise reply. Ensure the tone is helpful yet firm. Provide a clear subject line and a well-structured body.\n\nIncoming Email Snippet: {{ $json.snippet }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        720,
+        -128
+      ],
+      "id": "cff7ce9d-892e-4f73-b500-4f7542d027b4",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        32
+      ],
+      "id": "d9e64a0d-075f-4763-959a-8c40dd540f1a",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AAyEa6jMG4UoRwwA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Act as a professional Executive Assistant and Copywriter. I will provide you with a snippet of an incoming email. Your task is to draft a polite, professional, and concise reply. Ensure the tone is helpful yet firm. Provide a clear subject line and a well-structured body.\n\nIncoming Email Snippet: {{ $json.snippet }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        720,
+        208
+      ],
+      "id": "0eafb7da-0ddb-49c1-b23a-743ede6b7ac6",
+      "name": "AI Agent3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        400
+      ],
+      "id": "592ad02c-4c17-4ec4-a866-56ec5551c3cc",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AAyEa6jMG4UoRwwA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Act as a professional Executive Assistant and Copywriter. I will provide you with a snippet of an incoming email. Your task is to draft a polite, professional, and concise reply. Ensure the tone is helpful yet firm. Provide a clear subject line and a well-structured body.\n\nIncoming Email Snippet: {{ $json.snippet }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        720,
+        544
+      ],
+      "id": "82a0e8ae-039a-4a6a-9991-1c2bb89414f1",
+      "name": "AI Agent4"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        688
+      ],
+      "id": "d62e1a27-43e1-4b50-ba36-89ff7b4f2f43",
+      "name": "Google Gemini Chat Model6",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AAyEa6jMG4UoRwwA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $('Text Classifier').item.json.Subject }}",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        -432
+      ],
+      "id": "98769b25-12c5-4893-9c33-72a2628ebbf4",
+      "name": "Create a draft1",
+      "webhookId": "64796c8b-c650-4831-ac23-18ccb8a480fc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xM3df1UF9JjlcaQr",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Create a draft1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Label: AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent3": {
+      "main": [
+        [
+          {
+            "node": "Label: Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent4": {
+      "main": [
+        [
+          {
+            "node": "Label: Others",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "dd1dcbdc-8e69-4bda-93b6-0d073108db1c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "96753f1d5d26980b5ef5f87b3b9c5fa0e61026eb6dcc2ff2c58fccca13f0cb76"
+  },
+  "id": "48UBoSmuPoB7GlVH",
+  "tags": []
+}
