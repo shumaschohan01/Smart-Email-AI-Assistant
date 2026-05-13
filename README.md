@@ -39,7 +39,7 @@ Gmail Credentials: OAuth2 setup for Gmail API access within n8n.
 Clone the Repository:
 
 Bash
-git clone https://github.com/yourusername/n8n-gemini-gmail-assistant.git
+git clone https://github.com/shumaschohan1/Smart-Email-AI-Assistant.git
 Import to n8n:
 
 Open your n8n dashboard.
