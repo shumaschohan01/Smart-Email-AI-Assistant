@@ -57,3 +57,10 @@ Update the Google Gemini (PaLM) Api account credentials with your Gemini API key
 Activate: Save and set the workflow to Active.
 
 <img width="482" height="412" alt="image" src="https://github.com/user-attachments/assets/8d282c89-e261-4711-8c67-b4e3bf2b468e" />
+
+🤝 Connect with Me
+Agar aapko is project ke bare mein koi sawal ho ya aap collaboration chahte hon:
+
+Developer: Shumas Kashif Chohan
+LinkedIn: https://www.linkedin.com/in/shumas-kashif-chohan-54b51830b/
+Email: shumaschohan0@gamil.com
